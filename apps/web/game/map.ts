@@ -13,76 +13,116 @@ export type Rect = {
 // MAP DIMENSIONS
 // ============================================================================
 
-export const MAP_WIDTH = 2400;
-export const MAP_HEIGHT = 1600;
+export const MAP_WIDTH = 2800;
+export const MAP_HEIGHT = 1800;
 
 // ============================================================================
 // ROOMS
 // ============================================================================
 
 export const rooms: Rect[] = [
-  // Central Hub (large central room)
-  {
-    x: 900,
-    y: 600,
-    width: 600,
-    height: 400,
-  },
-  
   // Cafeteria (top left)
   {
-    x: 200,
-    y: 200,
-    width: 400,
-    height: 300,
-  },
-  
-  // Medbay (top right)
-  {
-    x: 1800,
-    y: 200,
-    width: 400,
-    height: 300,
-  },
-  
-  // Engine Room Left (left side)
-  {
     x: 100,
-    y: 800,
-    width: 350,
-    height: 400,
+    y: 100,
+    width: 450,
+    height: 350,
   },
   
-  // Engine Room Right (right side)
-  {
-    x: 1950,
-    y: 800,
-    width: 350,
-    height: 400,
-  },
-  
-  // Security (bottom left)
+  // Weapons (top center)
   {
     x: 700,
-    y: 1200,
-    width: 350,
-    height: 300,
-  },
-  
-  // Electrical (bottom right)
-  {
-    x: 1350,
-    y: 1200,
-    width: 350,
-    height: 300,
-  },
-  
-  // Storage (top center)
-  {
-    x: 1000,
     y: 100,
     width: 400,
     height: 300,
+  },
+  
+  // Navigation (top right)
+  {
+    x: 1250,
+    y: 100,
+    width: 350,
+    height: 300,
+  },
+  
+  // Shields (far right top)
+  {
+    x: 1750,
+    y: 100,
+    width: 350,
+    height: 350,
+  },
+  
+  // O2 (right side middle)
+  {
+    x: 2250,
+    y: 100,
+    width: 450,
+    height: 400,
+  },
+  
+  // Admin (center)
+  {
+    x: 1100,
+    y: 600,
+    width: 500,
+    height: 400,
+  },
+  
+  // Storage (left middle)
+  {
+    x: 100,
+    y: 600,
+    width: 400,
+    height: 350,
+  },
+  
+  // Electrical (bottom left)
+  {
+    x: 100,
+    y: 1100,
+    width: 400,
+    height: 350,
+  },
+  
+  // Lower Engine (bottom center-left)
+  {
+    x: 650,
+    y: 1200,
+    width: 350,
+    height: 450,
+  },
+  
+  // Security (bottom center)
+  {
+    x: 1150,
+    y: 1200,
+    width: 400,
+    height: 350,
+  },
+  
+  // Reactor (bottom center-right)
+  {
+    x: 1700,
+    y: 1150,
+    width: 400,
+    height: 500,
+  },
+  
+  // Upper Engine (right side bottom)
+  {
+    x: 2250,
+    y: 650,
+    width: 450,
+    height: 450,
+  },
+  
+  // Medbay (far right bottom)
+  {
+    x: 2250,
+    y: 1250,
+    width: 450,
+    height: 400,
   },
 ];
 
@@ -91,84 +131,150 @@ export const rooms: Rect[] = [
 // ============================================================================
 
 export const corridors: Rect[] = [
-  // Horizontal corridor connecting Cafeteria to Central Hub
+  // Top horizontal hallway (connecting Cafeteria -> Weapons -> Navigation -> Shields -> O2)
   {
-    x: 600,
-    y: 700,
-    width: 300,
+    x: 550,
+    y: 200,
+    width: 150,
     height: 120,
   },
-  
-  // Horizontal corridor connecting Central Hub to Medbay
-  {
-    x: 1500,
-    y: 700,
-    width: 300,
-    height: 120,
-  },
-  
-  // Vertical corridor from Cafeteria to Storage
-  {
-    x: 700,
-    y: 400,
-    width: 120,
-    height: 300,
-  },
-  
-  // Vertical corridor from Storage to Central Hub
   {
     x: 1100,
+    y: 200,
+    width: 150,
+    height: 120,
+  },
+  {
+    x: 1600,
+    y: 200,
+    width: 150,
+    height: 120,
+  },
+  {
+    x: 2100,
+    y: 250,
+    width: 150,
+    height: 120,
+  },
+  
+  // Cafeteria to Storage vertical
+  {
+    x: 250,
+    y: 450,
+    width: 120,
+    height: 150,
+  },
+  
+  // Weapons to Admin vertical
+  {
+    x: 850,
     y: 400,
     width: 120,
     height: 200,
   },
   
-  // Vertical corridor from Medbay down
+  // Navigation to Admin vertical
   {
-    x: 1900,
+    x: 1350,
+    y: 400,
+    width: 120,
+    height: 200,
+  },
+  
+  // Shields to Admin vertical
+  {
+    x: 1850,
+    y: 450,
+    width: 120,
+    height: 150,
+  },
+  
+  // O2 to Upper Engine vertical
+  {
+    x: 2400,
     y: 500,
     width: 120,
-    height: 300,
+    height: 150,
   },
   
-  // Horizontal corridor connecting Engine Room Left to Central Hub
+  // Storage to Admin horizontal
   {
-    x: 450,
-    y: 900,
-    width: 450,
+    x: 500,
+    y: 750,
+    width: 600,
     height: 120,
   },
   
-  // Horizontal corridor connecting Central Hub to Engine Room Right
+  // Admin to Upper Engine horizontal
   {
-    x: 1500,
-    y: 900,
-    width: 450,
+    x: 1600,
+    y: 800,
+    width: 650,
     height: 120,
   },
   
-  // Vertical corridor from Central Hub to Security
+  // Storage to Electrical vertical
   {
-    x: 850,
-    y: 1000,
+    x: 250,
+    y: 950,
     width: 120,
-    height: 200,
+    height: 150,
   },
   
-  // Vertical corridor from Central Hub to Electrical
+  // Electrical to Lower Engine horizontal
   {
-    x: 1430,
-    y: 1000,
-    width: 120,
-    height: 200,
+    x: 500,
+    y: 1250,
+    width: 150,
+    height: 120,
   },
   
-  // Horizontal corridor connecting Security to Electrical
+  // Lower Engine to Security horizontal
   {
-    x: 1050,
+    x: 1000,
     y: 1300,
-    width: 300,
+    width: 150,
     height: 120,
+  },
+  
+  // Security to Reactor horizontal
+  {
+    x: 1550,
+    y: 1300,
+    width: 150,
+    height: 120,
+  },
+  
+  // Admin to Security vertical
+  {
+    x: 1300,
+    y: 1000,
+    width: 120,
+    height: 200,
+  },
+  
+  // Admin to Reactor vertical
+  {
+    x: 1850,
+    y: 1000,
+    width: 120,
+    height: 150,
+  },
+  
+  // Reactor to Medbay horizontal
+  {
+    x: 2100,
+    y: 1350,
+    width: 150,
+    height: 120,
+  },
+  
+  // Upper Engine to Medbay vertical
+  {
+    x: 2400,
+    y: 1100,
+    width: 120,
+    height: 150,
   },
 ];
 
@@ -177,7 +283,7 @@ export const corridors: Rect[] = [
 // ============================================================================
 
 export const walls: Rect[] = [
-  // Outer boundary walls (thick borders)
+  // Outer boundary walls
   // Top wall
   {
     x: 0,
@@ -210,122 +316,198 @@ export const walls: Rect[] = [
     height: MAP_HEIGHT,
   },
   
-  // Interior obstacle walls in Cafeteria
+  // Cafeteria interior obstacles
   {
-    x: 250,
-    y: 280,
-    width: 120,
-    height: 30,
-  },
-  {
-    x: 450,
-    y: 350,
-    width: 30,
-    height: 100,
-  },
-  
-  // Interior obstacle walls in Medbay
-  {
-    x: 1900,
-    y: 250,
+    x: 200,
+    y: 200,
     width: 150,
-    height: 30,
+    height: 40,
   },
   {
-    x: 2050,
-    y: 350,
-    width: 30,
+    x: 380,
+    y: 300,
+    width: 40,
     height: 100,
   },
-  
-  // Interior obstacle walls in Central Hub
   {
-    x: 1050,
-    y: 700,
-    width: 100,
-    height: 30,
-  },
-  {
-    x: 1250,
-    y: 850,
-    width: 100,
-    height: 30,
-  },
-  {
-    x: 1100,
-    y: 800,
-    width: 30,
-    height: 80,
+    x: 150,
+    y: 350,
+    width: 120,
+    height: 35,
   },
   
-  // Interior obstacle walls in Engine Room Left
-  {
-    x: 180,
-    y: 900,
-    width: 80,
-    height: 30,
-  },
-  {
-    x: 300,
-    y: 1000,
-    width: 30,
-    height: 120,
-  },
-  
-  // Interior obstacle walls in Engine Room Right
-  {
-    x: 2100,
-    y: 900,
-    width: 80,
-    height: 30,
-  },
-  {
-    x: 2070,
-    y: 1000,
-    width: 30,
-    height: 120,
-  },
-  
-  // Interior obstacle walls in Security
+  // Weapons interior obstacles
   {
     x: 800,
-    y: 1280,
-    width: 100,
-    height: 30,
+    y: 180,
+    width: 180,
+    height: 40,
   },
   {
     x: 900,
-    y: 1350,
-    width: 30,
+    y: 280,
+    width: 40,
     height: 80,
   },
   
-  // Interior obstacle walls in Electrical
+  // Navigation interior obstacles
   {
-    x: 1500,
-    y: 1280,
-    width: 100,
-    height: 30,
+    x: 1350,
+    y: 200,
+    width: 150,
+    height: 40,
   },
   {
-    x: 1550,
-    y: 1350,
-    width: 30,
-    height: 80,
+    x: 1450,
+    y: 300,
+    width: 40,
+    height: 70,
   },
   
-  // Interior obstacle walls in Storage
+  // Shields interior obstacles
   {
-    x: 1100,
-    y: 180,
+    x: 1850,
+    y: 200,
     width: 120,
-    height: 30,
+    height: 40,
   },
+  {
+    x: 1950,
+    y: 300,
+    width: 40,
+    height: 100,
+  },
+  
+  // O2 interior obstacles
+  {
+    x: 2350,
+    y: 200,
+    width: 200,
+    height: 45,
+  },
+  {
+    x: 2500,
+    y: 350,
+    width: 40,
+    height: 100,
+  },
+  
+  // Admin interior obstacles
   {
     x: 1250,
-    y: 250,
-    width: 30,
+    y: 700,
+    width: 150,
+    height: 40,
+  },
+  {
+    x: 1400,
+    y: 850,
+    width: 120,
+    height: 40,
+  },
+  {
+    x: 1350,
+    y: 800,
+    width: 40,
     height: 100,
+  },
+  
+  // Storage interior obstacles
+  {
+    x: 200,
+    y: 700,
+    width: 100,
+    height: 80,
+  },
+  {
+    x: 350,
+    y: 800,
+    width: 80,
+    height: 60,
+  },
+  
+  // Electrical interior obstacles
+  {
+    x: 200,
+    y: 1200,
+    width: 120,
+    height: 40,
+  },
+  {
+    x: 350,
+    y: 1300,
+    width: 40,
+    height: 100,
+  },
+  
+  // Lower Engine interior obstacles
+  {
+    x: 750,
+    y: 1300,
+    width: 150,
+    height: 150,
+  },
+  {
+    x: 700,
+    y: 1500,
+    width: 40,
+    height: 100,
+  },
+  
+  // Security interior obstacles
+  {
+    x: 1250,
+    y: 1300,
+    width: 150,
+    height: 40,
+  },
+  {
+    x: 1400,
+    y: 1400,
+    width: 40,
+    height: 100,
+  },
+  
+  // Reactor interior obstacles
+  {
+    x: 1800,
+    y: 1250,
+    width: 180,
+    height: 180,
+  },
+  {
+    x: 1950,
+    y: 1500,
+    width: 40,
+    height: 100,
+  },
+  
+  // Upper Engine interior obstacles
+  {
+    x: 2350,
+    y: 750,
+    width: 200,
+    height: 150,
+  },
+  {
+    x: 2500,
+    y: 950,
+    width: 40,
+    height: 100,
+  },
+  
+  // Medbay interior obstacles
+  {
+    x: 2350,
+    y: 1350,
+    width: 150,
+    height: 40,
+  },
+  {
+    x: 2550,
+    y: 1450,
+    width: 40,
+    height: 120,
   },
 ];
 
@@ -334,66 +516,106 @@ export const walls: Rect[] = [
 // ============================================================================
 
 export const taskZones: Rect[] = [
-  // Task in Cafeteria
+  // Cafeteria task
   {
-    x: 520,
-    y: 240,
+    x: 450,
+    y: 250,
     width: 60,
     height: 60,
   },
   
-  // Task in Medbay
-  {
-    x: 1850,
-    y: 380,
-    width: 60,
-    height: 60,
-  },
-  
-  // Task in Central Hub
-  {
-    x: 1150,
-    y: 650,
-    width: 60,
-    height: 60,
-  },
-  
-  // Task in Engine Room Left
-  {
-    x: 200,
-    y: 1050,
-    width: 60,
-    height: 60,
-  },
-  
-  // Task in Engine Room Right
-  {
-    x: 2100,
-    y: 1050,
-    width: 60,
-    height: 60,
-  },
-  
-  // Task in Security
+  // Weapons task
   {
     x: 950,
-    y: 1250,
+    y: 200,
     width: 60,
     height: 60,
   },
   
-  // Task in Electrical
+  // Navigation task
   {
-    x: 1600,
-    y: 1250,
+    x: 1500,
+    y: 250,
     width: 60,
     height: 60,
   },
   
-  // Task in Storage
+  // Shields task
   {
-    x: 1200,
-    y: 150,
+    x: 2000,
+    y: 250,
+    width: 60,
+    height: 60,
+  },
+  
+  // O2 task
+  {
+    x: 2600,
+    y: 250,
+    width: 60,
+    height: 60,
+  },
+  
+  // Admin task
+  {
+    x: 1450,
+    y: 750,
+    width: 60,
+    height: 60,
+  },
+  
+  // Storage task
+  {
+    x: 250,
+    y: 850,
+    width: 60,
+    height: 60,
+  },
+  
+  // Electrical task
+  {
+    x: 250,
+    y: 1350,
+    width: 60,
+    height: 60,
+  },
+  
+  // Lower Engine task
+  {
+    x: 850,
+    y: 1500,
+    width: 60,
+    height: 60,
+  },
+  
+  // Security task
+  {
+    x: 1300,
+    y: 1450,
+    width: 60,
+    height: 60,
+  },
+  
+  // Reactor task
+  {
+    x: 1850,
+    y: 1500,
+    width: 60,
+    height: 60,
+  },
+  
+  // Upper Engine task
+  {
+    x: 2600,
+    y: 850,
+    width: 60,
+    height: 60,
+  },
+  
+  // Medbay task
+  {
+    x: 2450,
+    y: 1500,
     width: 60,
     height: 60,
   },
@@ -404,21 +626,21 @@ export const taskZones: Rect[] = [
 // ============================================================================
 
 export const spawnPoints: { x: number; y: number }[] = [
-  // Central Hub spawn points (clear of walls and obstacles)
-  { x: 1000, y: 750 },
-  { x: 1150, y: 750 },
-  { x: 1300, y: 750 },
-  { x: 1000, y: 900 },
-  { x: 1150, y: 900 },
-  { x: 1300, y: 900 },
-  { x: 1400, y: 800 },
-  { x: 950, y: 800 },
+  // Admin (central spawn area)
+  { x: 1200, y: 700 },
+  { x: 1350, y: 750 },
+  { x: 1500, y: 700 },
+  { x: 1250, y: 850 },
+  { x: 1400, y: 900 },
+  { x: 1500, y: 850 },
+  { x: 1300, y: 950 },
+  { x: 1450, y: 950 },
   
-  // Additional spawn points in Cafeteria
-  { x: 350, y: 350 },
-  { x: 500, y: 280 },
+  // Cafeteria spawns
+  { x: 300, y: 250 },
+  { x: 400, y: 300 },
   
-  // Additional spawn points in Storage
-  { x: 1100, y: 250 },
-  { x: 1300, y: 200 },
+  // Storage spawns
+  { x: 300, y: 750 },
+  { x: 400, y: 850 },
 ];

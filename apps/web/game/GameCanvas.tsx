@@ -48,49 +48,50 @@ export default function GameCanvas() {
     if (!ctx) return;
 
     // -------- MOVEMENT --------
-let nextX = player.current.x;
-let nextY = player.current.y;
+    let nextX = player.current.x;
+    let nextY = player.current.y;
 
-// Support WASD and Arrow keys
-if (keys.current["ArrowUp"] || keys.current["w"] || keys.current["W"]) {
-  nextY -= player.current.speed;
-}
-if (keys.current["ArrowDown"] || keys.current["s"] || keys.current["S"]) {
-  nextY += player.current.speed;
-}
-if (keys.current["ArrowLeft"] || keys.current["a"] || keys.current["A"]) {
-  nextX -= player.current.speed;
-}
-if (keys.current["ArrowRight"] || keys.current["d"] || keys.current["D"]) {
-  nextX += player.current.speed;
-}
+    // Support WASD and Arrow keys
+    if (keys.current["ArrowUp"] || keys.current["w"] || keys.current["W"]) {
+      nextY -= player.current.speed;
+    }
+    if (keys.current["ArrowDown"] || keys.current["s"] || keys.current["S"]) {
+      nextY += player.current.speed;
+    }
+    if (keys.current["ArrowLeft"] || keys.current["a"] || keys.current["A"]) {
+      nextX -= player.current.speed;
+    }
+    if (keys.current["ArrowRight"] || keys.current["d"] || keys.current["D"]) {
+      nextX += player.current.speed;
+    }
 
-// Check collision with walls
-const hitWall = walls.some((wall) =>
-  circleRectCollision(
-    nextX,
-    nextY,
-    player.current.size,
-    wall
-  )
-);
+    // INVERSE COLLISION: Check if player is in a walkable area
+    // Player can only walk on rooms, corridors, and task zones
+    const isInWalkableArea = 
+      rooms.some((room) => circleRectCollision(nextX, nextY, player.current.size, room)) ||
+      corridors.some((corridor) => circleRectCollision(nextX, nextY, player.current.size, corridor)) ||
+      taskZones.some((zone) => circleRectCollision(nextX, nextY, player.current.size, zone));
 
+    // Also check explicit walls (for interior obstacles)
+    const hitExplicitWall = walls.some((wall) =>
+      circleRectCollision(nextX, nextY, player.current.size, wall)
+    );
 
-// Only update position if not hitting wall
-if (!hitWall) {
-  player.current.x = nextX;
-  player.current.y = nextY;
-}
+    // Only update position if in walkable area AND not hitting explicit wall
+    if (isInWalkableArea && !hitExplicitWall) {
+      player.current.x = nextX;
+      player.current.y = nextY;
+    }
 
-// Simple boundary clamping
-player.current.x = Math.max(
-  player.current.size,
-  Math.min(MAP_WIDTH - player.current.size, player.current.x)
-);
-player.current.y = Math.max(
-  player.current.size,
-  Math.min(MAP_HEIGHT - player.current.size, player.current.y)
-);
+    // Simple boundary clamping
+    player.current.x = Math.max(
+      player.current.size,
+      Math.min(MAP_WIDTH - player.current.size, player.current.x)
+    );
+    player.current.y = Math.max(
+      player.current.size,
+      Math.min(MAP_HEIGHT - player.current.size, player.current.y)
+    );
     // -------- CAMERA (temporarily disabled for testing) --------
     const cameraX = Math.max(
   0,
@@ -138,7 +139,7 @@ const cameraY = Math.max(
     });
 
     // Walls
-    ctx.fillStyle = "#374151";
+    ctx.fillStyle = "#333c4cff";
     walls.forEach((w) => {
       ctx.fillRect(w.x, w.y, w.width, w.height);
     });
