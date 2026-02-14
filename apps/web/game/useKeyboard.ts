@@ -13,6 +13,7 @@ export function useKeyboard() {
       keys.current[e.key] = false;
     };
 
+
     document.addEventListener("keydown", down);
     document.addEventListener("keyup", up);
 

@@ -4,10 +4,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GameProvider } from "@/contexts/GameContext";
+import { LobbyProvider } from "@/contexts/LobbyContext";
 import NotFound from "@/pages/not-found";
 
 import LandingPage from "@/pages/LandingPage";
 import LobbyPage from "@/pages/LobbyPage";
+import PartyRoom from "@/pages/PartyRoom";
 import RoleRevealPage from "@/pages/RoleRevealPage";
 import GameEngine from "@/components/GameEngine";
 import HUD from "@/components/HUD";
@@ -34,6 +36,7 @@ function Router() {
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/lobby" component={LobbyPage} />
+      <Route path="/party" component={PartyRoom} />
       <Route path="/role" component={RoleRevealPage} />
       
       {/* All game phases now use the same GameView with overlays */}
@@ -52,10 +55,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <GameProvider>
-          <Toaster />
-          <Router />
-        </GameProvider>
+        <LobbyProvider>
+          <GameProvider>
+            <Toaster />
+            <Router />
+          </GameProvider>
+        </LobbyProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

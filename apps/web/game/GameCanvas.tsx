@@ -44,6 +44,7 @@ export default function GameCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
+    
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -108,6 +109,22 @@ const cameraY = Math.max(
     player.current.y - CANVAS_HEIGHT / 2
   )
 );
+
+// -------- TASK PROXIMITY CHECK --------
+const canInteract = taskZones.some((zone) =>
+  circleRectCollision(
+    player.current.x,
+    player.current.y,
+    player.current.size,
+    zone
+  )
+);
+
+if (canInteract && (keys.current["e"] || keys.current["E"])) {
+  console.log("Task triggered!");
+}
+
+
 
     // -------- DRAW (proper order) --------
     
@@ -186,6 +203,19 @@ const cameraY = Math.max(
     ctx.font = "bold 12px 'IBM Plex Sans', sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("You", player.current.x, player.current.y - player.current.size - 8);
+
+    
+// -------- INTERACTION PROMPT --------
+if (canInteract) {
+  ctx.fillStyle = "yellow";
+  ctx.font = "bold 14px 'IBM Plex Sans', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    "Press E to interact",
+    player.current.x,
+    player.current.y - player.current.size - 25
+  );
+}
 
     // 7. Restore context state
     ctx.restore();
