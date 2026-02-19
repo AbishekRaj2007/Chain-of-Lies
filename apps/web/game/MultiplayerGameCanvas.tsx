@@ -4,7 +4,7 @@
  * Renders the game world and handles local player movement
  * Uses global game store for player state
  */
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { useKeyboard } from "./useKeyboard";
 import { useGameLoop } from "./useGameLoop";
 import { useGameStore } from "@/stores/useGameStore";
@@ -17,6 +17,9 @@ import {
   MAP_WIDTH,
   MAP_HEIGHT,
 } from "./map";
+import BrokenSequencePopup from "./tasks/task1";
+import BlockBouncePopup from "./tasks/task2";
+import GasFeeRunnerPopup from "./tasks/task3";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
@@ -36,12 +39,35 @@ const circleRectCollision = (
   return dx * dx + dy * dy < radius * radius;
 };
 
+const TASK_ZONE_LABELS = [
+  "Cafeteria",
+  "Weapons",
+  "Navigation",
+  "Shields",
+  "O2",
+  "Admin",
+  "Storage",
+  "Electrical",
+  "Lower Engine",
+  "Security",
+  "Reactor",
+  "Upper Engine",
+  "Medbay",
+];
+
 export default function MultiplayerGameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const keys = useKeyboard();
 
   const { players, localPlayerId, updatePlayer } = useGameStore();
   const { emitPlayerMove } = useGameSocket();
+
+  // Task states
+  const [showPuzzle, setShowPuzzle] = useState(false);
+  const [showBounce, setShowBounce] = useState(false);
+  const [showGasFee, setShowGasFee] = useState(false);
+
+  const eWasPressed = useRef(false);
 
   const localPlayer = useRef({
     size: 18,
@@ -51,6 +77,19 @@ export default function MultiplayerGameCanvas() {
   // Get local player data from store
   const localPlayerData = localPlayerId ? players[localPlayerId] : null;
 
+  // ESC closes any open task
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowPuzzle(false);
+        setShowBounce(false);
+        setShowGasFee(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Update function - handles local player movement and rendering
   const update = useCallback(() => {
     const canvas = canvasRef.current;
@@ -59,8 +98,10 @@ export default function MultiplayerGameCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee;
+
     // -------- LOCAL PLAYER MOVEMENT --------
-    if (localPlayerData) {
+    if (localPlayerData && !isAnyTaskOpen) {
       let nextX = localPlayerData.x;
       let nextY = localPlayerData.y;
 
@@ -137,21 +178,27 @@ export default function MultiplayerGameCanvas() {
     }
 
     // -------- TASK PROXIMITY CHECK --------
-    let canInteract = false;
+    let nearTaskIndex: number | null = null;
     if (localPlayerData) {
-      canInteract = taskZones.some((zone) =>
-        circleRectCollision(
-          localPlayerData.x,
-          localPlayerData.y,
-          localPlayer.current.size,
-          zone
-        )
-      );
+      taskZones.forEach((zone, index) => {
+        if (circleRectCollision(localPlayerData.x, localPlayerData.y, localPlayer.current.size, zone)) {
+          nearTaskIndex = index;
+        }
+      });
 
-      if (canInteract && (keys.current["e"] || keys.current["E"])) {
-        // Trigger task interaction
-        // This would emit a socket event in real implementation
+      const canInteract = nearTaskIndex !== null;
+
+      const ePressed = !!(keys.current["e"] || keys.current["E"]);
+      if (canInteract && ePressed && !eWasPressed.current && !isAnyTaskOpen) {
+        if (nearTaskIndex === 0) {
+          setShowPuzzle(true);
+        } else if (nearTaskIndex === 1) {
+          setShowBounce(true);
+        } else if (nearTaskIndex === 2) {
+          setShowGasFee(true);
+        }
       }
+      eWasPressed.current = ePressed;
     }
 
     // -------- RENDERING --------
@@ -190,9 +237,18 @@ export default function MultiplayerGameCanvas() {
     });
 
     // Task Zones
-    ctx.fillStyle = "rgba(255, 255, 0, 0.3)";
-    taskZones.forEach((t) => {
+    taskZones.forEach((t, index) => {
+      ctx.fillStyle = index === nearTaskIndex ? "#facc15" : "#eab308";
       ctx.fillRect(t.x, t.y, t.width, t.height);
+
+      ctx.fillStyle = "#000";
+      ctx.font = "bold 9px 'IBM Plex Sans', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        TASK_ZONE_LABELS[index] ?? `Task ${index + 1}`,
+        t.x + t.width / 2,
+        t.y + t.height / 2 + 4
+      );
     });
 
     // 6. Draw all players
@@ -251,8 +307,8 @@ export default function MultiplayerGameCanvas() {
     });
 
     // 7. Interaction prompt
-    if (canInteract && localPlayerData) {
-      ctx.fillStyle = "yellow";
+    if (nearTaskIndex !== null && localPlayerData && !isAnyTaskOpen) {
+      ctx.fillStyle = "#facc15";
       ctx.font = "bold 14px 'IBM Plex Sans', sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(
@@ -265,23 +321,44 @@ export default function MultiplayerGameCanvas() {
     // 8. Restore context state
     ctx.restore();
 
-  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove]);
+  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove, showPuzzle, showBounce, showGasFee]);
 
   // Start game loop
   useGameLoop(update);
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        tabIndex={0}
-        className="border border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+          tabIndex={0}
+          className="border border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+
+        {/* Task 1 — renders its own fixed overlay */}
+        <BrokenSequencePopup
+          isOpen={showPuzzle}
+          onClose={() => setShowPuzzle(false)}
+        />
+
+        {/* Task 2 — renders its own fixed overlay */}
+        <BlockBouncePopup
+          isOpen={showBounce}
+          onClose={() => setShowBounce(false)}
+        />
+
+        <GasFeeRunnerPopup
+          isOpen={showGasFee}
+          onClose={() => setShowGasFee(false)}
+        />
+      </div>
+
       <div className="text-sm text-muted-foreground">
         <span className="font-semibold text-foreground">WASD</span> or{" "}
-        <span className="font-semibold text-foreground">Arrow Keys</span> to move
+        <span className="font-semibold text-foreground">Arrow Keys</span> to move ·{" "}
+        <span className="font-semibold text-foreground">E</span> to interact
         {localPlayerData && (
           <div className="text-xs mt-1">
             Position: ({Math.round(localPlayerData.x)}, {Math.round(localPlayerData.y)}) |

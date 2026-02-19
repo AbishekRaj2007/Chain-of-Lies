@@ -11,6 +11,7 @@ import {
 } from "./map";
 import BrokenSequencePopup from "./tasks/task1";
 import BlockBouncePopup from "./tasks/task2";
+import GasFeeRunnerPopup from "./tasks/task3";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
@@ -52,6 +53,8 @@ export default function GameCanvas() {
   const [showPuzzle, setShowPuzzle] = useState(false);
   // Task 2 (Weapons zone, index 1) popup state
   const [showBounce, setShowBounce] = useState(false);
+  // Task 3 (Navigation zone, index 2) popup state
+  const [showGasFee, setShowGasFee] = useState(false);
 
   // Track which task zone the player is near (for E-key trigger)
   const nearTaskIndexRef = useRef<number | null>(null);
@@ -70,6 +73,7 @@ export default function GameCanvas() {
       if (e.key === "Escape") {
         setShowPuzzle(false);
         setShowBounce(false);
+        setShowGasFee(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -82,7 +86,7 @@ export default function GameCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const isAnyTaskOpen = showPuzzle || showBounce;
+    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee;
 
     // -------- MOVEMENT (blocked while a task is open) --------
     if (!isAnyTaskOpen) {
@@ -135,6 +139,10 @@ export default function GameCanvas() {
       // Task zone 1 = Weapons → Task 2
       else if (nearTaskIndex === 1) {
         setShowBounce(true);
+      }
+      // Task zone 2 = Navigation → Task 3
+      else if (nearTaskIndex === 2) {
+        setShowGasFee(true);
       }
     }
     eWasPressed.current = ePressed;
@@ -209,7 +217,7 @@ export default function GameCanvas() {
     }
 
     ctx.restore();
-  }, [keys, showPuzzle, showBounce]);
+  }, [keys, showPuzzle, showBounce, showGasFee]);
 
   useGameLoop(update);
 
@@ -233,6 +241,11 @@ export default function GameCanvas() {
       <BlockBouncePopup
         isOpen={showBounce}
         onClose={() => setShowBounce(false)}
+      />
+
+      <GasFeeRunnerPopup
+        isOpen={showGasFee}
+        onClose={() => setShowGasFee(false)}
       />
 
       <div className="text-sm text-muted-foreground">
