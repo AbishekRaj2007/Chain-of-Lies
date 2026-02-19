@@ -23,6 +23,7 @@ import GasFeeRunnerPopup from "./tasks/task3";
 import MemoryMinerPopup from "./tasks/task4";
 import BlockCatcherPopup from "./tasks/task5";
 import SmartContractQuickFixPopup from "./tasks/task6";
+import ColourPredictionSpinnerPopup from "./tasks/task7";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
@@ -72,6 +73,7 @@ export default function MultiplayerGameCanvas() {
   const [showMiner, setShowMiner] = useState(false);
   const [showCatcher, setShowCatcher] = useState(false);
   const [showFix, setShowFix] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const eWasPressed = useRef(false);
 
@@ -93,6 +95,7 @@ export default function MultiplayerGameCanvas() {
         setShowMiner(false);
         setShowCatcher(false);
         setShowFix(false);
+        setShowSpinner(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -107,7 +110,7 @@ export default function MultiplayerGameCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner || showCatcher || showFix;
+    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner || showCatcher || showFix || showSpinner;
 
     // -------- LOCAL PLAYER MOVEMENT --------
     if (localPlayerData && !isAnyTaskOpen) {
@@ -211,6 +214,8 @@ export default function MultiplayerGameCanvas() {
           setShowCatcher(true);
         } else if (nearTaskIndex === 5) {
           setShowFix(true);
+        } else if (nearTaskIndex === 6) {
+          setShowSpinner(true);
         }
       }
       eWasPressed.current = ePressed;
@@ -336,7 +341,7 @@ export default function MultiplayerGameCanvas() {
     // 8. Restore context state
     ctx.restore();
 
-  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove, showPuzzle, showBounce, showGasFee, showMiner, showCatcher, showFix]);
+  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove, showPuzzle, showBounce, showGasFee, showMiner, showCatcher, showFix, showSpinner]);
 
   // Start game loop
   useGameLoop(update);
@@ -382,6 +387,11 @@ export default function MultiplayerGameCanvas() {
         <SmartContractQuickFixPopup
           isOpen={showFix}
           onClose={() => setShowFix(false)}
+        />
+
+        <ColourPredictionSpinnerPopup
+          isOpen={showSpinner}
+          onClose={() => setShowSpinner(false)}
         />
       </div>
 
