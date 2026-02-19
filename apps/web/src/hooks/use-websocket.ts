@@ -112,7 +112,7 @@ export function useGameSocket() {
         handler(validated as any);
       });
 
-      return () => handlersRef.current.delete(mapped);
+      return () => { handlersRef.current.delete(mapped); };
     };
 
     return { emit, on };

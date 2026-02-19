@@ -13,6 +13,7 @@ import BrokenSequencePopup from "./tasks/task1";
 import BlockBouncePopup from "./tasks/task2";
 import GasFeeRunnerPopup from "./tasks/task3";
 import MemoryMinerPopup from "./tasks/task4";
+import BlockCatcherPopup from "./tasks/task5";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
@@ -56,8 +57,10 @@ export default function GameCanvas() {
   const [showBounce, setShowBounce] = useState(false);
   // Task 3 (Navigation zone, index 2) popup state
   const [showGasFee, setShowGasFee] = useState(false);
-  // Task 4 (Shields zone, index 2) popup state
+  // Task 4 (Shields zone, index 3) popup state
   const [showMiner, setShowMiner] = useState(false);
+  // Task 5 (O2 zone, index 4) popup state
+  const [showCatcher, setShowCatcher] = useState(false);
 
   // Track which task zone the player is near (for E-key trigger)
   const nearTaskIndexRef = useRef<number | null>(null);
@@ -78,6 +81,7 @@ export default function GameCanvas() {
         setShowBounce(false);
         setShowGasFee(false);
         setShowMiner(false);
+        setShowCatcher(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -90,7 +94,7 @@ export default function GameCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner;
+    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner || showCatcher;
 
     // -------- MOVEMENT (blocked while a task is open) --------
     if (!isAnyTaskOpen) {
@@ -148,9 +152,13 @@ export default function GameCanvas() {
       else if (nearTaskIndex === 2) {
         setShowGasFee(true);
       }
-      // Task zone 3 = Navigation → Task 3
+      // Task zone 3 = Shields → Task 4
       else if (nearTaskIndex === 3) {
         setShowMiner(true);
+      }
+      // Task zone 4 = O2 → Task 5
+      else if (nearTaskIndex === 4) {
+        setShowCatcher(true);
       }
     }
     eWasPressed.current = ePressed;
@@ -225,7 +233,7 @@ export default function GameCanvas() {
     }
 
     ctx.restore();
-  }, [keys, showPuzzle, showBounce, showGasFee, showMiner]);
+  }, [keys, showPuzzle, showBounce, showGasFee, showMiner, showCatcher]);
 
   useGameLoop(update);
 
@@ -259,6 +267,11 @@ export default function GameCanvas() {
       <MemoryMinerPopup
         isOpen={showMiner}
         onClose={() => setShowMiner(false)}
+      />
+
+      <BlockCatcherPopup
+        isOpen={showCatcher}
+        onClose={() => setShowCatcher(false)}
       />
 
       <div className="text-sm text-muted-foreground">

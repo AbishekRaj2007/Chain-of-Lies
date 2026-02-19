@@ -21,6 +21,7 @@ import BrokenSequencePopup from "./tasks/task1";
 import BlockBouncePopup from "./tasks/task2";
 import GasFeeRunnerPopup from "./tasks/task3";
 import MemoryMinerPopup from "./tasks/task4";
+import BlockCatcherPopup from "./tasks/task5";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
@@ -68,6 +69,7 @@ export default function MultiplayerGameCanvas() {
   const [showBounce, setShowBounce] = useState(false);
   const [showGasFee, setShowGasFee] = useState(false);
   const [showMiner, setShowMiner] = useState(false);
+  const [showCatcher, setShowCatcher] = useState(false);
 
   const eWasPressed = useRef(false);
 
@@ -87,6 +89,7 @@ export default function MultiplayerGameCanvas() {
         setShowBounce(false);
         setShowGasFee(false);
         setShowMiner(false);
+        setShowCatcher(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -101,7 +104,7 @@ export default function MultiplayerGameCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner;
+    const isAnyTaskOpen = showPuzzle || showBounce || showGasFee || showMiner || showCatcher;
 
     // -------- LOCAL PLAYER MOVEMENT --------
     if (localPlayerData && !isAnyTaskOpen) {
@@ -201,6 +204,8 @@ export default function MultiplayerGameCanvas() {
           setShowGasFee(true);
         } else if (nearTaskIndex === 3) {
           setShowMiner(true);
+        } else if (nearTaskIndex === 4) {
+          setShowCatcher(true);
         }
       }
       eWasPressed.current = ePressed;
@@ -326,7 +331,7 @@ export default function MultiplayerGameCanvas() {
     // 8. Restore context state
     ctx.restore();
 
-  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove, showPuzzle, showBounce, showGasFee, showMiner]);
+  }, [keys, players, localPlayerId, localPlayerData, updatePlayer, emitPlayerMove, showPuzzle, showBounce, showGasFee, showMiner, showCatcher]);
 
   // Start game loop
   useGameLoop(update);
@@ -362,6 +367,11 @@ export default function MultiplayerGameCanvas() {
         <MemoryMinerPopup
           isOpen={showMiner}
           onClose={() => setShowMiner(false)}
+        />
+
+        <BlockCatcherPopup
+          isOpen={showCatcher}
+          onClose={() => setShowCatcher(false)}
         />
       </div>
 
